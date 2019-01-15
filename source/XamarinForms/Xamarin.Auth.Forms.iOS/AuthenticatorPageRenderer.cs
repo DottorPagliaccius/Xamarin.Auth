@@ -15,11 +15,11 @@ using UIKit;
 namespace Xamarin.Auth.XamarinForms.XamarinIOS
 {
     [Preserve(AllMembers = true)]
-    #if XAMARIN_AUTH_INTERNAL
+#if XAMARIN_AUTH_INTERNAL
     internal class AuthenticatorPageRenderer : Xamarin.Forms.Platform.iOS.PageRenderer
-    #else
-    public class AuthenticatorPageRenderer : Xamarin.Forms.Platform.iOS.PageRenderer
-    #endif
+#else
+    public class AuthenticatorPageRenderer : PageRenderer
+#endif
     {
         bool renderer_was_shown = false;
         bool oauth_was_shown = false;
@@ -30,19 +30,19 @@ namespace Xamarin.Auth.XamarinForms.XamarinIOS
         {
             if (oauth_was_shown)
             {
-				// close Xamarin.Auth.XamarinForms.AuthenticatorPage
-				this.DismissViewController
+                // close Xamarin.Auth.XamarinForms.AuthenticatorPage
+                this.DismissViewController
                         (
                             true,
-							async delegate
+                            async delegate
                             {
                                 return;
                             }
                        );
             }
-            
+
             if (!renderer_was_shown)
-            { 
+            {
                 renderer_was_shown = true;
 
                 base.ViewDidAppear(animated);
@@ -56,8 +56,8 @@ namespace Xamarin.Auth.XamarinForms.XamarinIOS
                 uiviewcontorller = Authenticator.GetUI();
                 PresentViewController
                     (
-                        uiviewcontorller, 
-                        true, 
+                        uiviewcontorller,
+                        true,
                         () =>
                         {
                             oauth_was_shown = true;
@@ -106,7 +106,7 @@ namespace Xamarin.Auth.XamarinForms.XamarinIOS
             this.DismissViewController
                     (
                         true,
-						async delegate
+                        async delegate
                         {
                             return;
                         }

@@ -184,12 +184,12 @@ namespace Xamarin.Auth._MobileServices
             {
                 return
                     // AccessToken url is defined
-                    accessTokenUrl != null                      
+                    accessTokenUrl != null
                     &&
                     // Client Secret MAY be defined
                     //
                     // true
-                    ( string.IsNullOrWhiteSpace(clientSecret) || !string.IsNullOrWhiteSpace(clientSecret) )  
+                    (string.IsNullOrWhiteSpace(clientSecret) || !string.IsNullOrWhiteSpace(clientSecret))
                     ;
             }
         }
@@ -276,13 +276,13 @@ namespace Xamarin.Auth._MobileServices
             ///---------------------------------------------------------------------------------------
             #endregion
 
-            #if DEBUG
+#if DEBUG
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"OAuth2Authenticator ");
             sb.AppendLine($"        IsUsingNativeUI = {IsUsingNativeUI}");
             sb.AppendLine($"        redirectUrl = {redirectUrl}");
             System.Diagnostics.Debug.WriteLine(sb.ToString());
-            #endif
+#endif
 
             return;
         }
@@ -326,7 +326,7 @@ namespace Xamarin.Auth._MobileServices
                         )
             : this(redirectUrl, clientSecret, accessTokenUrl)
         {
-            this.is_using_native_ui = isUsingNativeUI;
+            is_using_native_ui = isUsingNativeUI;
 
             if (string.IsNullOrEmpty(clientId))
             {
@@ -383,7 +383,7 @@ namespace Xamarin.Auth._MobileServices
                     OK according to the RFC
                     
     				//throw new ArgumentException("clientSecret must be provided", "clientSecret");
-                 */ 
+                 */
 
                 System.Diagnostics.Debug.WriteLine(this.ToString());
             }
@@ -412,10 +412,10 @@ namespace Xamarin.Auth._MobileServices
             this.is_using_native_ui = isUsingNativeUI;
             this.State = new OAuth2.State();
 
-			this.redirectUrl = redirectUrl;
-			this.accessTokenUrl = accessTokenUrl;
+            this.redirectUrl = redirectUrl;
+            this.accessTokenUrl = accessTokenUrl;
 
-			Verify();
+            Verify();
 
 
             #region
@@ -464,12 +464,12 @@ namespace Xamarin.Auth._MobileServices
 			*/
             string oauth_redirect_uri_original = this.redirectUrl.OriginalString;
 
-            #if DEBUG
+#if DEBUG
             string oauth_redirect_uri_absolute = this.redirectUrl.AbsoluteUri;
 
             System.Diagnostics.Debug.WriteLine("GetInitialUrlAsync callbackUrl.AbsoluteUri    = " + oauth_redirect_uri_absolute);
             System.Diagnostics.Debug.WriteLine("GetInitialUrlAsync callbackUrl.OriginalString = " + oauth_redirect_uri_original);
-            #endif
+#endif
 
             #region
             //---------------------------------------------------------------------------------------
@@ -584,13 +584,13 @@ namespace Xamarin.Auth._MobileServices
             oauth_request_query_parameters.Add("state", state);
             //---------------------------------------------------------------------------------------
 
-            #if DEBUG
+#if DEBUG
             System.Diagnostics.Debug.WriteLine("OAuth Query Parameters DEFAULT:");
             foreach (KeyValuePair<string, string> kvp in oauth_request_query_parameters)
             {
                 System.Diagnostics.Debug.WriteLine($"      [{kvp.Key}] = {kvp.Value}");
             }
-            #endif
+#endif
 
             //---------------------------------------------------------------------------------------
             if (custom_query_parameters != null)
@@ -608,13 +608,13 @@ namespace Xamarin.Auth._MobileServices
                 }
             }
 
-            #if DEBUG
+#if DEBUG
             System.Diagnostics.Debug.WriteLine("OAuth Query Parameters CUSTOMIZED:");
             foreach (KeyValuePair<string, string> kvp in oauth_request_query_parameters)
             {
                 System.Diagnostics.Debug.WriteLine($"      [{kvp.Key}] = {kvp.Value}");
             }
-            #endif
+#endif
             //---------------------------------------------------------------------------------------
             return oauth_request_query_parameters;
         }
@@ -636,7 +636,7 @@ namespace Xamarin.Auth._MobileServices
         {
             List<string> response_types = VerifyOAuth2FlowResponseType
                                                     (
-                                                        this.AccessTokenUrl, 
+                                                        this.AccessTokenUrl,
                                                         this.ClientSecret,      // MAY indicate
                                                         null
                                                     );
@@ -660,11 +660,11 @@ namespace Xamarin.Auth._MobileServices
                 throw new InvalidOperationException("Uknown response_type");
             }
 
-            #if DEBUG
+#if DEBUG
             StringBuilder sb = new StringBuilder();
-            sb.Append($"        response_type = ").AppendLine(string.Join(" ",response_types));
+            sb.Append($"        response_type = ").AppendLine(string.Join(" ", response_types));
             System.Diagnostics.Debug.WriteLine(sb.ToString());
-            #endif
+#endif
 
             return response_types;
         }
@@ -798,22 +798,35 @@ namespace Xamarin.Auth._MobileServices
                         System.Diagnostics.Debug.WriteLine($"OAuthAuthenticator exception {msg}");
                     }
 
-                    RequestAccessTokenAsync(code)
-                            .ContinueWith
-                                (
-                                    task =>
-                                    {
-                                        if (task.IsFaulted)
-                                        {
-                                            OnError(task.Exception);
-                                        }
-                                        else
-                                        {
-                                            OnRetrievedAccountProperties(task.Result);
-                                        }
-                                    },
-                                    task_scheduler
-                                );
+                    //RequestAccessTokenAsync(code)
+                    //.ContinueWith
+                    //(
+                    //    task =>
+                    //    {
+                    //        if (task.IsFaulted)
+                    //        {
+                    //            OnError(task.Exception);
+                    //        }
+                    //        else
+                    //        {
+                    //            OnRetrievedAccountProperties(task.Result);
+                    //        }
+                    //    },
+                    //    task_scheduler
+                    //);
+
+                    var task = RequestAccessTokenAsync(code);
+
+                    task.Wait();
+
+                    if (task.IsFaulted)
+                    {
+                        OnError(task.Exception);
+                    }
+                    else
+                    {
+                        OnRetrievedAccountProperties(task.Result);
+                    }
                 }
                 else
                 {
@@ -846,7 +859,7 @@ namespace Xamarin.Auth._MobileServices
         {
             // mc++ changed protected to public for extension methods RefreshToken (Adrian Stevens) 
 
-            var queryValues = new Dictionary<string, string> 
+            var queryValues = new Dictionary<string, string>
             {
                 { "grant_type", "authorization_code" },
                 { "code", code },
@@ -989,7 +1002,7 @@ namespace Xamarin.Auth._MobileServices
                                     HttpWebClientUsed
                                  );
             */
-            System.Text.StringBuilder sb = new System.Text.StringBuilder(base.ToString());
+            StringBuilder sb = new System.Text.StringBuilder(base.ToString());
 
             sb.AppendLine().AppendLine(this.GetType().ToString());
             classlevel_depth++;

@@ -6,85 +6,52 @@ using System.Text;
 namespace Xamarin.Auth.XamarinForms
 {
     [Preserve(AllMembers = true)]
-    #if XAMARIN_AUTH_INTERNAL
+#if XAMARIN_AUTH_INTERNAL
     internal class AuthenticatorPage : ContentPage
-    #else
+#else
     public class AuthenticatorPage : ContentPage
-    #endif
+#endif
 
     {
-        public Authenticator Authenticator
-        {
-            get;
-            set;
-        } = null;
+        public Authenticator Authenticator { get; set; } = null;
 
         public AuthenticatorPage()
-            : base()
         {
-            this.Title = "Authenticator Page";
+            Title = "";
 
             return;
         }
 
-        public AuthenticatorPage(Authenticator a)
-            : this()
+        public AuthenticatorPage(Authenticator a) : this()
         {
-            this.Authenticator = a;
+            Authenticator = a;
 
             return;
         }
 
-        bool was_shown = false;
+        bool was_shown;
 
-        #if XAMARIN_AUTH_INTERNAL
+#if XAMARIN_AUTH_INTERNAL
         internal void Authentication_Completed(object sender, AuthenticatorCompletedEventArgs e)
-        #else
+#else
         public void Authentication_Completed(object sender, AuthenticatorCompletedEventArgs e)
-	    #endif
+#endif
         {
-            #if DEBUG
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"IsAuthenticated = {e.IsAuthenticated}");
-            sb.AppendLine($"Account.User    = {e.Account?.Username}");
-            sb.AppendLine($"access_token    = {e.Account?.Properties["access_token"]}");
 
-            DisplayAlert
-                (
-                    "Completed",
-                    sb.ToString(),
-                    "Close"
-                );
-            #endif
-
-            return;
         }
 
-        #if XAMARIN_AUTH_INTERNAL
+#if XAMARIN_AUTH_INTERNAL
         internal void Authentication_Error(object sender, AuthenticatorErrorEventArgs e)
-        #else
+#else
         public void Authentication_Error(object sender, AuthenticatorErrorEventArgs e)
-        #endif
+#endif
         {
-            #if DEBUG
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Message   = {e.Message}");
 
-			DisplayAlert
-				(
-                    "Error",
-					sb.ToString(),
-                    "Close"
-                );
-            #endif
-
-            return;
         }
 
         public void Authentication_BrowsingCompleted(object sender, EventArgs e)
         {
 
-            return;
         }
 
         protected override void OnAppearing()
@@ -99,13 +66,11 @@ namespace Xamarin.Auth.XamarinForms
             {
                 was_shown = true;
             }
- 
-            return;
         }
 
         protected override void OnDisappearing()
         {
-            return;
+
         }
     }
 }

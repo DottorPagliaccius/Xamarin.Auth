@@ -29,11 +29,11 @@ namespace Xamarin.Auth
 namespace Xamarin.Auth._MobileServices
 #endif
 {
-    #if XAMARIN_AUTH_INTERNAL
+#if XAMARIN_AUTH_INTERNAL
     internal partial class WebAuthenticatorActivity : global::Android.Accounts.AccountAuthenticatorActivity
-    #else
+#else
     public partial class WebAuthenticatorActivity : global::Android.Accounts.AccountAuthenticatorActivity
-	#endif
+#endif
     {
         class Client : WebViewClient
         {
@@ -50,7 +50,7 @@ namespace Xamarin.Auth._MobileServices
             public override bool ShouldOverrideUrlLoading(WebView view, string url)
             {
                 view.Settings.UserAgentString = WebViewConfiguration.Android.UserAgent;
-                
+
                 string scheme = null;
                 string host = null;
 
@@ -60,13 +60,13 @@ namespace Xamarin.Auth._MobileServices
                 activity.state.Authenticator.Host = host;
                 activity.state.Authenticator.Scheme = scheme;
 
-                #if DEBUG
+#if DEBUG
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Xamarin.Auth.Android.WebAuthenticatorActivity").AppendLine("");
                 sb.Append("             Scheme = ").AppendLine(scheme);
                 sb.Append("             Host   = ").AppendLine(host);
                 System.Diagnostics.Debug.WriteLine(sb.ToString());
-                #endif
+#endif
 
                 bool should_override = false;
 
@@ -98,8 +98,6 @@ namespace Xamarin.Auth._MobileServices
                 var uri = new Uri(url);
                 activity.state.Authenticator.OnPageLoading(uri);
                 activity.BeginProgress(uri.Authority);
-
-                return;
             }
 
             public override void OnPageFinished(WebView view, string url)
@@ -109,12 +107,9 @@ namespace Xamarin.Auth._MobileServices
                 var uri = new Uri(url);
                 activity.state.Authenticator.OnPageLoaded(uri);
                 activity.EndProgress();
-
-                return;
             }
 
-            class SslCertificateEqualityComparer
-                : IEqualityComparer<SslCertificate>
+            class SslCertificateEqualityComparer : IEqualityComparer<SslCertificate>
             {
                 public bool Equals(SslCertificate x, SslCertificate y)
                 {

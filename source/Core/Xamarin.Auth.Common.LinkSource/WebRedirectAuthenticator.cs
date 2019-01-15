@@ -29,11 +29,11 @@ namespace Xamarin.Auth._MobileServices
     /// An authenticator that displays web pages until a given "redirect" page is encountered. It then
     /// returns an account with the fragment on that URL.
     /// </summary>
-    #if XAMARIN_AUTH_INTERNAL
+#if XAMARIN_AUTH_INTERNAL
     internal class WebRedirectAuthenticator : WebAuthenticator
-    #else
+#else
     public class WebRedirectAuthenticator : WebAuthenticator
-    #endif
+#endif
     {
         Uri initialUrl;
         Uri redirectUrl;
@@ -79,10 +79,10 @@ namespace Xamarin.Auth._MobileServices
         /// </param>
         public override void OnPageLoaded(Uri url)
         {
-			IDictionary<string, string> query = WebEx.FormDecode(url.Query);
-			IDictionary<string, string> fragment = WebEx.FormDecode(url.Fragment);
-			this.Query = query;
-			this.Fragment = fragment;
+            IDictionary<string, string> query = WebEx.FormDecode(url.Query);
+            IDictionary<string, string> fragment = WebEx.FormDecode(url.Fragment);
+            this.Query = query;
+            this.Fragment = fragment;
 
 
             if (ShouldEncounterOnPageLoaded)
@@ -99,34 +99,34 @@ namespace Xamarin.Auth._MobileServices
             set;
         }
 
-		public IDictionary<string, string> Fragment
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Event handler called when a new page is being loaded in the web browser.
-		/// </summary>
-		/// <param name='url'>
-		/// The URL of the page.
-		/// </param>
-		public override void OnPageLoading(Uri url)
+        public IDictionary<string, string> Fragment
         {
-            #if DEBUG
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Event handler called when a new page is being loaded in the web browser.
+        /// </summary>
+        /// <param name='url'>
+        /// The URL of the page.
+        /// </param>
+        public override void OnPageLoading(Uri url)
+        {
+#if DEBUG
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             sb.AppendLine("WebRedirectAuthenticator OnPageLoading Called");
             sb.AppendLine("     AbsoluteUri  = ").AppendLine(url.AbsoluteUri);
             sb.AppendLine("     AbsolutePath = ").AppendLine(url.AbsolutePath);
             System.Diagnostics.Debug.WriteLine(sb.ToString());
-            #endif
+#endif
 
             var query = WebEx.FormDecode(url.Query);
             var fragment = WebEx.FormDecode(url.Fragment);
 
             // mc++
             // TODO: schemas
-            if (ShouldEncounterOnPageLoading)
+            if (ShouldEncounterOnPageLoading && !UrlMatchesRedirect(url))
             {
                 OnPageEncountered(url, query, fragment);
             }
@@ -160,9 +160,6 @@ namespace Xamarin.Auth._MobileServices
                 all[kv.Key] = kv.Value;
             }
 
-            //
-            // Check for errors
-            //
             if (all.ContainsKey("error"))
             {
                 string description = all["error"];
@@ -170,7 +167,7 @@ namespace Xamarin.Auth._MobileServices
                 {
                     description = all["error_description"];
                 }
-                OnError(string.Format("OAuth Error = {0}",description));
+                OnError(string.Format("OAuth Error = {0}", description));
 
                 return;
             }
@@ -183,15 +180,13 @@ namespace Xamarin.Auth._MobileServices
                 // TODO:  mc++ schemas
                 OnRedirectPageLoaded(url, query, fragment);
             }
-
-            return;
         }
 
         protected bool UrlMatchesRedirect(Uri url)
         {
             // mc++
             // TODO: schemas
-            return url.Host == redirectUrl.Host && url.LocalPath == redirectUrl.LocalPath;
+            return (url.Host == redirectUrl.Host && url.LocalPath == redirectUrl.LocalPath);
         }
 
         /// <summary>
@@ -210,13 +205,13 @@ namespace Xamarin.Auth._MobileServices
         {
             string msg = null;
 
-            #if DEBUG
+#if DEBUG
             string q = string.Join("  ;  ", query.Select(x => x.Key + "=" + x.Value));
-            msg = String.Format("WebRedirectAuthenticator.OnRedirectPageLoaded {0}", q);
+            msg = string.Format("WebRedirectAuthenticator.OnRedirectPageLoaded {0}", q);
             string f = string.Join("  ;  ", query.Select(x => x.Key + "=" + x.Value));
-            msg = String.Format("WebRedirectAuthenticator.OnRedirectPageLoaded {0}", f);
+            msg = string.Format("WebRedirectAuthenticator.OnRedirectPageLoaded {0}", f);
             System.Diagnostics.Debug.WriteLine(msg);
-            #endif
+#endif
 
             // TODO:  mc++ schemas
             if (fragment.Any())
@@ -241,22 +236,22 @@ namespace Xamarin.Auth._MobileServices
         } = false;
 
 
-		/// <summary>
-		/// Sets a value indicating whether OnPageEncountered gets fired during OnPageLoading.
-		/// </summary>       
-		/// <value><c>true</c> if OnPageEncountered should be fired in OnPageLoading; otherwise, <c>false</c>.</value>
-		public bool ShouldEncounterOnPageLoading
+        /// <summary>
+        /// Sets a value indicating whether OnPageEncountered gets fired during OnPageLoading.
+        /// </summary>       
+        /// <value><c>true</c> if OnPageEncountered should be fired in OnPageLoading; otherwise, <c>false</c>.</value>
+        public bool ShouldEncounterOnPageLoading
         {
             get;
             set;
         } = true;
 
 
-		/// <summary>
-		/// Sets a value indicating whether OnPageEncountered gets fired during OnPageLoaded.
-		/// </summary>       
-		/// <value><c>true</c> if OnPageEncountered should be fired in OnPageLoaded; otherwise, <c>false</c>.</value>
-		public bool ShouldEncounterOnPageLoaded
+        /// <summary>
+        /// Sets a value indicating whether OnPageEncountered gets fired during OnPageLoaded.
+        /// </summary>       
+        /// <value><c>true</c> if OnPageEncountered should be fired in OnPageLoaded; otherwise, <c>false</c>.</value>
+        public bool ShouldEncounterOnPageLoaded
         {
             get;
             set;
